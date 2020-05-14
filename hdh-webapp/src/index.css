@@ -1,0 +1,62 @@
+body {
+    font: 14px "Century Gothic", Futura, sans-serif;
+    margin: 20px;
+  }
+
+
+.main-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: auto;
+    width: 100vw;
+}
+
+.meals-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    width: 80%;
+}
+
+
+.meal-container {
+    height: 80%;
+    width: 70%;
+}
+
+.add-meal-container {
+    bottom: 5%;
+    height: 14vw;
+    width: 14vw;
+    position: absolute;
+    right: 20%;
+}
+
+
+/* BUTTONS */
+
+.meal-button {
+    background: #C4C4C4;
+    border-radius: 16px;
+    box-sizing: border-box;
+    width: 80%;
+    height: 80%;
+    transform: matrix(1, 0, 0, 1, 0, 0);
+
+}
+
+.meal-container .meal-button {
+    margin-left: 3%;
+    margin-top: 3%;
+}
+
+.add-meal-button {
+    background: #C4C4C4;
+    border: 1px solid #000000;
+    border-radius: 50%;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
+    width: 80%;
+    height: 80%;
+}
