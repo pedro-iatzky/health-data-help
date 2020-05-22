@@ -1,8 +1,7 @@
 body {
     font: 14px "Century Gothic", Futura, sans-serif;
     margin: 20px;
-  }
-
+}
 
 .main-dashboard {
     display: flex;
@@ -19,9 +18,13 @@ body {
     width: 80%;
 }
 
-
 .meal-container {
     height: 80%;
+    width: 70%;
+}
+
+.meal-container.meal-selected {
+    height: 200%;
     width: 70%;
 }
 
@@ -33,22 +36,26 @@ body {
     right: 20%;
 }
 
-
 /* BUTTONS */
 
 .meal-button {
     background: #C4C4C4;
     border-radius: 16px;
     box-sizing: border-box;
-    width: 80%;
-    height: 80%;
-    transform: matrix(1, 0, 0, 1, 0, 0);
+    margin-left: 3%;
+    margin-top: 3%;
 
+    transform: matrix(1, 0, 0, 1, 0, 0);
 }
 
 .meal-container .meal-button {
-    margin-left: 3%;
-    margin-top: 3%;
+    width: 80%;
+    height: 80%;
+}
+
+.meal-container.meal-selected .meal-button {
+    width: 70%;
+    height: 20%;
 }
 
 .add-meal-button {
@@ -59,4 +66,21 @@ body {
     box-sizing: border-box;
     width: 80%;
     height: 80%;
+}
+
+
+/* WRITTABLE CONTENT */
+
+.meal-description {
+    display: none;
+    border-radius: 16px;
+    margin-left: 3%;
+    margin-top: 3%;
+    resize: none;
+}
+
+.meal-container.meal-selected .meal-description {
+    display: inline-block;
+    width: 80%;
+    height: 70%;
 }
