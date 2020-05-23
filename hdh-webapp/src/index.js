@@ -1,201 +1,77 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {MealsDashboard} from './dashboard/dashboard'
 import './index.css';
-import {getMeals, postMeal} from './dbController';
+import {UserAuthPage, checkUserIsSignedIn, getIdToken} from './auth/auth'
 
-const mealNames = {
-  100: "breakfast",
-  200: "lunch",
-  300: "afternoon-snack",
-  400: "dinner"
-}
 
-class MealsDashboard extends React.Component {
+class UserAuth extends React.Component {
   constructor(props) {
     super(props)
-    let date = (new Date()).toISOString().substring(0, 10);
     this.state = {
-      date: date,
-      meals: {}
-    } 
-    this.handleMealDescriptionSave = this.handleMealDescriptionSave.bind(this)
-  }
-
-  renderMealContainer(mealOrder) {
-    let meal = this.state.meals[mealOrder]
-    let mealDescription = ""
-    if (meal) {
-      mealDescription = meal.mealDescription
+      idToken: "",
+      userIsSignIn: null
     }
-    return (
-      <MealContainer 
-      mealName={mealNames[mealOrder]} 
-      mealDescription={mealDescription}
-      order={mealOrder}
-      handleMealDescriptionSave={(e) => this.handleMealDescriptionSave(e)} />
-    );
+    this.saveIdToken = this.saveIdToken.bind(this)
+    this.userlogsin = this.userlogsin.bind(this)
+    this.userlogsout = this.userlogsout.bind(this)
+  }
+  
+  userlogsin() {
+    getIdToken(this.saveIdToken)
   }
 
-  renderAddMealButton() {
-    return (
-      <AddMealButton />
-    );
+  userlogsout() {
+    this.setState({
+      userIsSignIn: false
+    })
+  }
+
+  saveIdToken(idToken) {
+    this.setState({
+      idToken: idToken,
+      userIsSignIn: true
+    })
   }
 
   componentDidMount() {
-    // TODO: move this to the constructor in order to avoid double rendering
-    getMeals(this.state.date)
-      .then(
-        (result) => {
-          let meals = {}
-          result.forEach(element => 
-            meals[element.order] = {
-              mealDescription: element.meal_description,
-              order: element.order
-            }
-          );
-          this.setState({
-            meals: meals
-          });
-        },
-        (error) => {
-          // TODO: handle error 
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      )
+    checkUserIsSignedIn(this.userlogsin, this.userlogsout)
   }
 
-  handleMealDescriptionSave(event) {
-    let order = event.order
-    let mealDescription = event.mealDescription
-    let meals = Object.assign({}, this.state.meals);
-    if (meals[order]) {
-      if (meals[order]["mealDescription"] === mealDescription) {
-        // If no change was performed, we want to save a write in the db
-        return
-      }
-      meals[order]["mealDescription"] = mealDescription
-    } else {
-      meals[order] = {
-        "mealDescription": mealDescription,
-        "order": order
-      }
+  renderLoadingScreen() {
+    return (
+      <div>Loading...</div>
+    );
+  }
+
+  renderAuthPage() {
+    return (
+      <UserAuthPage />
+    );
+  }
+  
+  renderDashboardPage() {
+    return (
+      <MealsDashboard
+        idToken={this.state.idToken} />
+    );
+  }
+
+
+  render() {
+    if (this.state.userIsSignIn === null) {
+      // The user status has not loaded yet
+      return this.renderLoadingScreen()
     }
-    // Save into db
-    postMeal(this.state.date, order, mealDescription)
-    this.setState({
-      meals: meals
-    })
-  }
-
-  render() {
-    return (
-      <div className="main-dashboard">
-        <div className="meals-dashboard">
-          {this.renderMealContainer(100)}
-          {this.renderMealContainer(200)}
-          {this.renderMealContainer(300)}
-          {this.renderMealContainer(400)}
-        </div>
-        <div className="add-meal-container">
-          {this.renderAddMealButton()}
-        </div>
-      </div>
-    )
-
-  }
-}
-
-class MealContainer extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = { 
-      isSelected: false,
-     }
-  }
-
-  getClasses() {
-    return "meal-container" + (this.state.isSelected ? " meal-selected" : "")
-  }
-
-  handleClick() {
-    this.setState({
-      isSelected: !this.state.isSelected
-    })
-  }
-
-  renderMealButton(mealName, ) {
-    return (
-      <MealButton
-        value={mealName}
-        onClick={() => this.handleClick()} />
-    );
-  }
-  renderMealDescription(mealName) {
-    return (
-      <MealDescription 
-        value={mealName}
-        mealDescription={this.props.mealDescription}
-        order={this.props.order}
-        onBlur={this.props.handleMealDescriptionSave}
-       />
-    );
-  }
-
-  render() {
-    return (
-      <div className={this.getClasses()}>
-        {this.renderMealButton(this.props.mealName)}
-        {this.renderMealDescription(this.props.mealName)}
-      </div>
-    );
-  }
-
-}
-
-class MealButton extends React.Component {
-  render() {
-    return (
-      <button className="meal-button" onClick={() => this.props.onClick()}>
-        {this.props.value}
-      </button>
-    );
-  }
-}
-
-class MealDescription extends React.Component {
-  render() {
-    return (
-      <div className="meal-description">
-        <textarea className="meal-description"
-         type="text" placeholder="A carrot, a pepper, a tomato, a piece of salmon. An apple" 
-         onBlur={(e) => this.props.onBlur({order: this.props.order, mealDescription: e.target.value})} 
-         defaultValue={this.props.mealDescription}
-         />
-      </div>
-    );
-  }
-}
-
-class AddMealButton extends React.Component {
-  onClick() {
-    alert("You cannot add another food at this moment. Add you meal description inside another one you think it fits the most")
-  }
-
-  render() {
-    return (
-      <button className="add-meal-button" onClick={() => this.onClick()}>
-        +
-      </button>
-    );
+    if (this.state.userIsSignIn) {
+      return this.renderDashboardPage()
+    }
+    return this.renderAuthPage()
   }
 }
 
 
 ReactDOM.render(
-  <MealsDashboard />,
+  <UserAuth />,
   document.getElementById('root')
 );
