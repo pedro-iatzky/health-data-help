@@ -4,6 +4,8 @@ import {MealsDashboard} from './dashboard/dashboard'
 import './index.css';
 import {UserAuthPage, checkUserIsSignedIn, getIdToken} from './auth/auth'
 
+import {Diseases} from './diseases/diseases'
+
 
 class UserAuth extends React.Component {
   constructor(props) {
@@ -71,7 +73,18 @@ class UserAuth extends React.Component {
 }
 
 
+// ReactDOM.render(
+//   <UserAuth />,
+//   document.getElementById('root')
+// );
+
+
+// ReactDOM.render(
+//   <MealsDashboard />,
+//   document.getElementById('root')
+// );
+
 ReactDOM.render(
-  <UserAuth />,
+  <Diseases />,
   document.getElementById('root')
 );

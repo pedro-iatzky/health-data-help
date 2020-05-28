@@ -1,0 +1,84 @@
+body {
+    font: 14px "Century Gothic", Futura, sans-serif;
+    margin: 20px;
+}
+
+.main-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: auto;
+    width: 100vw;
+}
+
+.diseases-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    width: 80%;
+}
+
+.disease-container {
+    height: 80%;
+    width: 70%;
+}
+
+.diseases-container.disease-selected {
+    height: 200%;
+    width: 70%;
+}
+
+.add-diseases-container {
+    bottom: 5%;
+    height: 14vw;
+    width: 14vw;
+    position: absolute;
+    right: 20%;
+}
+
+/* BUTTONS */
+
+.disease-button {
+    background: #C4C4C4;
+    border-radius: 16px;
+    box-sizing: border-box;
+    margin-left: 3%;
+    margin-top: 3%;
+    transform: matrix(1, 0, 0, 1, 0, 0);
+}
+
+.disease-container .disease-button {
+    width: 80%;
+    height: 80%;
+}
+
+.disease-container.disease-selected .disease-button {
+    width: 70%;
+    height: 20%;
+}
+
+.add-disease-button {
+    background: #C4C4C4;
+    border: 1px solid #000000;
+    border-radius: 50%;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
+    width: 80%;
+    height: 80%;
+}
+
+/* WRITTABLE CONTENT */
+
+.disease-description {
+    display: none;
+    border-radius: 16px;
+    margin-left: 3%;
+    margin-top: 3%;
+    resize: none;
+}
+
+.disease-container.disease-selected .disease-description {
+    display: inline-block;
+    width: 80%;
+    height: 70%;
+}
