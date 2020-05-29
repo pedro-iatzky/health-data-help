@@ -90,7 +90,7 @@ export class MealsDashboard extends React.Component {
     let meals = Object.assign({}, this.state.meals);
     if (meals[order]) {
       if (meals[order]["mealDescription"] === mealDescription) {
-        // If no change was performed, we want to save a write in the db
+        // If no change was performed, we want to avoid to save a write in the db
         return
       }
       meals[order]["mealDescription"] = mealDescription

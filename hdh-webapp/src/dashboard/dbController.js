@@ -1,10 +1,6 @@
-var mealsApi = ""
-if (process.env.REACT_APP_STAGE === "local") {
-    mealsApi = "http://localhost:5000/healthdatahelp-e4ab1/us-central1/meals"
-} else {
-    // throw "meals api no defined";
-    mealsApi = "https://us-central1-healthdatahelp-e4ab1.cloudfunctions.net/meals"
-}
+import {api} from '../common'
+
+var mealsApi = `${api}/meals`
 
 
 export function getMeals(date, idToken) {

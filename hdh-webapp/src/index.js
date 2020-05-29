@@ -59,6 +59,13 @@ class UserAuth extends React.Component {
     );
   }
 
+  renderDiseasesPage() {
+    return (
+      <Diseases
+        idToken={this.state.idToken} />
+    );
+  }
+
 
   render() {
     if (this.state.userIsSignIn === null) {
@@ -66,25 +73,15 @@ class UserAuth extends React.Component {
       return this.renderLoadingScreen()
     }
     if (this.state.userIsSignIn) {
-      return this.renderDashboardPage()
+      // return this.renderDashboardPage()
+      return this.renderDiseasesPage()
     }
     return this.renderAuthPage()
   }
 }
 
 
-// ReactDOM.render(
-//   <UserAuth />,
-//   document.getElementById('root')
-// );
-
-
-// ReactDOM.render(
-//   <MealsDashboard />,
-//   document.getElementById('root')
-// );
-
 ReactDOM.render(
-  <Diseases />,
+  <UserAuth />,
   document.getElementById('root')
 );
