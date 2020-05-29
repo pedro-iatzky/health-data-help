@@ -14,13 +14,12 @@ body {
 .meals-dashboard {
     display: flex;
     flex-direction: column;
-    height: 70%;
     width: 80%;
 }
 
 .meal-container {
     height: 80%;
-    width: 70%;
+    width: 80%;
 }
 
 .meal-container.meal-selected {
@@ -29,7 +28,6 @@ body {
 }
 
 .add-meal-container {
-    bottom: 5%;
     height: 14vw;
     width: 14vw;
     position: absolute;
@@ -44,7 +42,6 @@ body {
     box-sizing: border-box;
     margin-left: 3%;
     margin-top: 3%;
-
     transform: matrix(1, 0, 0, 1, 0, 0);
 }
 
@@ -67,7 +64,6 @@ body {
     width: 80%;
     height: 80%;
 }
-
 
 /* WRITTABLE CONTENT */
 

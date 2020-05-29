@@ -49,17 +49,17 @@ app.get('/diseases/dates/:date', [
           response.push(diseaseResponse)
         })
         res.json({ data: response });
-      })
-        .catch((err) => {
+        return
+      }).catch((err) => {
           console.log('Error executing queryDiseasesDate', err);
         });
     } else {
       // If the snapshot does'n exist, we want to return an empty response 
       res.json({ data: response });
+      return
     }
-
-  }
-  ).catch((err) => {
+    return 
+  }).catch((err) => {
     console.log('Error getting userDocRef documents', err);
   });
   return null
@@ -95,12 +95,13 @@ app.put('/diseases/selected', [
   // Update the doc if it already exists
   let updateUserDoc = docRef.update(dbObject).then(() => {
     res.json({ message: "Diseases succesfully saved" });
+    return
   }).catch((err) => {
     //  The document does not exist, so create it
     docRef.set(dbObject)
     res.json({ message: "Diseases succesfully saved" });
-  }
-  );
+    console.log(err)
+  });
 
 
 });
@@ -166,6 +167,9 @@ app.put('/diseases', [
     }
 
     res.json({ message: "Disease successfully saved" });
+    return
+  }).catch((err) => {
+    console.log(err)
   });
 });
 

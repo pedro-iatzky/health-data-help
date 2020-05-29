@@ -1,16 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {MealsDashboard} from './dashboard/dashboard'
-import './index.css';
-import {UserAuthPage, checkUserIsSignedIn, getIdToken} from './auth/auth'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
 
-import {Diseases} from './diseases/diseases'
+import './index.css';
+
+import { MealsDashboard } from './dashboard/dashboard'
+import { UserAuthPage, checkUserIsSignedIn, getIdToken } from './auth/auth'
+import { Diseases } from './diseases/diseases'
+
 
 
 class UserAuth extends React.Component {
   constructor(props) {
     super(props)
+    let date = new Date()
     this.state = {
+      date: date.toISOString().substring(0, 10),
+      dateObj: date,
       idToken: "",
       userIsSignIn: null
     }
@@ -18,7 +28,7 @@ class UserAuth extends React.Component {
     this.userlogsin = this.userlogsin.bind(this)
     this.userlogsout = this.userlogsout.bind(this)
   }
-  
+
   userlogsin() {
     getIdToken(this.saveIdToken)
   }
@@ -42,7 +52,11 @@ class UserAuth extends React.Component {
 
   renderLoadingScreen() {
     return (
-      <div>Loading...</div>
+      <div className="d-flex align-items-center">
+        <strong>Loading...</strong>
+        <div className="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+      </div>
+      // <div>Loading...</div>
     );
   }
 
@@ -51,21 +65,59 @@ class UserAuth extends React.Component {
       <UserAuthPage />
     );
   }
-  
+
   renderDashboardPage() {
     return (
       <MealsDashboard
-        idToken={this.state.idToken} />
+        key={this.state.date}
+        idToken={this.state.idToken}
+        date={this.state.date}
+        showPreviousDate={() => this.showPreviousDate()}
+        showNextDate={() => this.showNextDate()} />
     );
   }
+
 
   renderDiseasesPage() {
     return (
       <Diseases
-        idToken={this.state.idToken} />
+        key={this.state.date}
+        idToken={this.state.idToken}
+        date={this.state.date}
+        showPreviousDate={() => this.showPreviousDate()}
+        showNextDate={() => this.showNextDate()} />
     );
   }
 
+  showPreviousDate() {
+    let currentDate = new Date()
+    let prevDate = new Date(this.state.dateObj.getTime());
+    prevDate.setDate(prevDate.getDate() - 1)
+    let diffTime = Math.abs(currentDate - prevDate);
+    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if (diffDays > 8) {
+      return
+    }
+    this.setState({
+      date: prevDate.toISOString().substring(0, 10),
+      dateObj: prevDate
+    }
+    )
+  }
+
+  showNextDate() {
+    let currentDate = new Date()
+    let nextDate = new Date(this.state.dateObj.getTime());
+    nextDate.setDate(nextDate.getDate() + 1)
+    if (nextDate > currentDate) {
+      return
+    }
+    this.setState({
+      date: nextDate.toISOString().substring(0, 10),
+      dateObj: nextDate
+    }
+    )
+  }
 
   render() {
     if (this.state.userIsSignIn === null) {
@@ -73,8 +125,20 @@ class UserAuth extends React.Component {
       return this.renderLoadingScreen()
     }
     if (this.state.userIsSignIn) {
-      // return this.renderDashboardPage()
-      return this.renderDiseasesPage()
+      return (
+        <Switch>
+          <Route path="/dashboard">
+            {this.renderDashboardPage()}
+          </Route>
+          <Route path="/diseases">
+            {this.renderDiseasesPage()}
+          </Route>
+          <Route path="/">
+            {this.renderDashboardPage()}
+          </Route>
+        </Switch>
+      )
+
     }
     return this.renderAuthPage()
   }
@@ -82,6 +146,8 @@ class UserAuth extends React.Component {
 
 
 ReactDOM.render(
-  <UserAuth />,
+  <Router>
+    <UserAuth />
+  </Router>,
   document.getElementById('root')
 );

@@ -1,7 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { useHistory } from "react-router-dom";
 import './dashboard.css';
 import { getMeals, postMeal } from './dbController';
+import {DatesNavigator} from '../common'
 
 
 const mealNames = {
@@ -16,12 +17,19 @@ export class MealsDashboard extends React.Component {
 
   constructor(props) {
     super(props)
-    let date = (new Date()).toISOString().substring(0, 10);
     this.state = {
-      date: date,
       meals: {}
     }
     this.handleMealDescriptionSave = this.handleMealDescriptionSave.bind(this)
+  }
+
+  renderDatesNavigator() {
+    return (
+      <DatesNavigator
+        date={this.props.date}
+        onLeftClick={() => this.props.showPreviousDate()}
+        onRightClick={() => this.props.showNextDate()} />
+    )
   }
 
   renderMealContainer(mealOrder) {
@@ -39,6 +47,12 @@ export class MealsDashboard extends React.Component {
     );
   }
 
+  renderChangePageButton() {
+    return (
+      <ChangePageButton />
+    );
+  }
+
   renderAddMealButton() {
     return (
       <AddMealButton />
@@ -47,12 +61,11 @@ export class MealsDashboard extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-
     // TODO: move this to the constructor in order to avoid double rendering
     if (!this.props.idToken) {
       return
     }
-    getMeals(this.state.date, this.props.idToken)
+    getMeals(this.props.date, this.props.idToken)
       .then(
         (result) => {
           let meals = {}
@@ -101,7 +114,7 @@ export class MealsDashboard extends React.Component {
       }
     }
     // Save into db
-    postMeal(this.state.date, order, mealDescription, this.props.idToken)
+    postMeal(this.props.date, order, mealDescription, this.props.idToken)
     this.setState({
       meals: meals
     })
@@ -110,14 +123,26 @@ export class MealsDashboard extends React.Component {
   render() {
     return (
       <div className="main-dashboard">
-        <div className="meals-dashboard">
-          {this.renderMealContainer(100)}
-          {this.renderMealContainer(200)}
-          {this.renderMealContainer(300)}
-          {this.renderMealContainer(400)}
+        <div className="main-header">
+          {this.renderDatesNavigator()}
         </div>
-        <div className="add-meal-container">
-          {this.renderAddMealButton()}
+        <div className="main-body">
+          <div className="meals-dashboard">
+            {this.renderMealContainer(100)}
+            {this.renderMealContainer(200)}
+            {this.renderMealContainer(300)}
+            {this.renderMealContainer(400)}
+          </div>
+          <div className="side-section">
+            <div className="change-page-container">
+              {this.renderChangePageButton()}
+            </div>
+          </div>
+        </div>
+        <div className="main-footer">
+          <div className="add-meal-container">
+            {this.renderAddMealButton()}
+          </div>
         </div>
       </div>
     )
@@ -174,7 +199,7 @@ class MealContainer extends React.Component {
 class MealButton extends React.Component {
   render() {
     return (
-      <button className="meal-button" onClick={() => this.props.onClick()}>
+      <button className="meal-button btn btn-success" onClick={() => this.props.onClick()}>
         {this.props.value}
       </button>
     );
@@ -209,8 +234,17 @@ class AddMealButton extends React.Component {
   }
 }
 
+function ChangePageButton() {
+  const history = useHistory();
 
-ReactDOM.render(
-  <MealsDashboard />,
-  document.getElementById('root')
-);
+  function handleClick() {
+    history.push("/diseases");
+  }
+  return (
+    <button className="btn btn-center" onClick={handleClick}>
+      <svg className="bi bi-chevron-right" width="32" height="64" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path fillRule="evenodd" d="M6.646 3.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L12.293 10 6.646 4.354a.5.5 0 010-.708z" />
+      </svg>
+    </button>
+  );
+}

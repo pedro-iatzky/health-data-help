@@ -1,9 +1,11 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
 import './diseases.css'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import { diseasesList } from './diseasesList'
 import { getDiseases, putDisease, putDiseasesSelected } from './dbController'
+import { DatesNavigator } from '../common'
 
 
 export class Diseases extends React.Component {
@@ -11,9 +13,7 @@ export class Diseases extends React.Component {
 
 	constructor(props) {
 		super(props);
-		let date = (new Date()).toISOString().substring(0, 10);
 		this.state = {
-			date: date,
 			diseases: {},
 			diseasesTracked: null,
 			modalShow: false,
@@ -34,7 +34,7 @@ export class Diseases extends React.Component {
 		if (!this.props.idToken) {
 			return
 		}
-		getDiseases(this.state.date, this.props.idToken)
+		getDiseases(this.props.date, this.props.idToken)
 			.then(
 				(result) => {
 					let diseases = {}
@@ -48,6 +48,7 @@ export class Diseases extends React.Component {
 					}
 					);
 					if (this._isMounted) {
+
 						this.setState({
 							diseases: diseases,
 							diseasesTracked: diseasesTracked,
@@ -71,6 +72,15 @@ export class Diseases extends React.Component {
 		this._isMounted = false;
 	}
 
+	renderDatesNavigator() {
+		return (
+			<DatesNavigator
+				date={this.props.date}
+				onLeftClick={() => this.props.showPreviousDate()}
+				onRightClick={() => this.props.showNextDate()} />
+		)
+	}
+
 	renderDiseaseContainer(disease_dobj) {
 		// TODO: Order the diseases
 		let disease = disease_dobj[0]
@@ -84,11 +94,6 @@ export class Diseases extends React.Component {
 	}
 
 	handleDiseaseDescriptionSave(disease, diseaseDescription) {
-		console.log("save disease description")
-		console.log("disease: ", disease)
-		console.log("diseaseDescription: ", diseaseDescription)
-
-
 		let diseases = Object.assign({}, this.state.diseases);
 		if (diseases[disease]) {
 			if (diseases[disease]["diseaseDescription"] === diseaseDescription) {
@@ -103,7 +108,7 @@ export class Diseases extends React.Component {
 			}
 		}
 
-		putDisease(this.state.date, disease, diseaseDescription, this.props.idToken)
+		putDisease(this.props.date, disease, diseaseDescription, this.props.idToken)
 		this.setState({
 			diseases: diseases
 		})
@@ -141,6 +146,12 @@ export class Diseases extends React.Component {
 		)
 	}
 
+	renderChangePageButton() {
+		return (
+			<ChangePageButton />
+		);
+	}
+
 	renderModal() {
 		if (this.state.diseasesTracked !== null) {
 			// We do not want to render the modal until getting the response from database
@@ -158,12 +169,24 @@ export class Diseases extends React.Component {
 	render() {
 		return (
 			<div className="main-dashboard">
-				<div className="diseases-dashboard">
-					{Object.entries(this.state.diseases).map((d) => this.renderDiseaseContainer(d))}
+				<div className="main-header">
+					{this.renderDatesNavigator()}
 				</div>
-				<div className="add-diseases-container">
-					{this.renderAddDiseaseButton()}
-					{this.renderModal()}
+				<div className="main-body">
+					<div className="diseases-dashboard">
+						{Object.entries(this.state.diseases).map((d) => this.renderDiseaseContainer(d))}
+					</div>
+					<div className="side-section">
+						<div className="change-page-container">
+							{this.renderChangePageButton()}
+						</div>
+					</div>
+				</div>
+				<div className="main-footer">
+					<div className="add-diseases-container">
+						{this.renderAddDiseaseButton()}
+						{this.renderModal()}
+					</div>
 				</div>
 			</div>
 		)
@@ -216,15 +239,17 @@ class DiseaseContainer extends React.Component {
 	}
 }
 
+
 class DiseaseButton extends React.Component {
 	render() {
 		return (
-			<button className="disease-button" onClick={() => this.props.onClick()}>
+			<button className="disease-button btn btn-success" onClick={() => this.props.onClick()}>
 				{this.props.value}
 			</button>
 		);
 	}
 }
+
 
 class DiseaseDescription extends React.Component {
 	render() {
@@ -311,5 +336,21 @@ class DiseasesModal extends React.Component {
 			</Modal>
 		);
 	}
+}
+
+// Stay Dry, move this to a common file
+function ChangePageButton() {
+	const history = useHistory();
+
+	function handleClick() {
+		history.push("/dashboard");
+	}
+	return (
+		<button className="btn btn-center" onClick={handleClick}>
+			<svg className="bi bi-chevron-right" width="32" height="64" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				<path fillRule="evenodd" d="M6.646 3.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L12.293 10 6.646 4.354a.5.5 0 010-.708z" />
+			</svg>
+		</button>
+	);
 }
 

@@ -14,13 +14,12 @@ body {
 .diseases-dashboard {
     display: flex;
     flex-direction: column;
-    height: 70%;
     width: 80%;
 }
 
 .disease-container {
     height: 80%;
-    width: 70%;
+    width: 80%;
 }
 
 .diseases-container.disease-selected {
@@ -29,7 +28,6 @@ body {
 }
 
 .add-diseases-container {
-    bottom: 5%;
     height: 14vw;
     width: 14vw;
     position: absolute;

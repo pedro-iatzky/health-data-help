@@ -1,0 +1,47 @@
+/* COMMON LAYOUT */
+
+.main-header {
+    height: 5%;
+}
+
+.main-body {
+    display: flex;
+    flex-direction: row;
+    height: 70%;
+}
+
+.side-section {
+    width: 15%
+}
+
+.main-footer {
+    height: 20%
+}
+
+/* COMMON COMPONENTS */
+
+.date-legend {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.btn-center {
+    margin: 0;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.change-page-container {
+    margin: 0;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
