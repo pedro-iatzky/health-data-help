@@ -2,14 +2,14 @@ import React from 'react';
 import { useHistory } from "react-router-dom";
 import './dashboard.css';
 import { getMeals, postMeal } from './dbController';
-import {DatesNavigator} from '../common'
+import { DatesNavigator } from '../common'
 
 
 const mealNames = {
-  100: "breakfast",
-  200: "lunch",
-  300: "afternoon-snack",
-  400: "dinner"
+  100: "Breakfast",
+  200: "Lunch",
+  300: "Afternoon-snack",
+  400: "Dinner"
 }
 
 export class MealsDashboard extends React.Component {
@@ -18,7 +18,8 @@ export class MealsDashboard extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      meals: {}
+      meals: {},
+      selectedMeal: null
     }
     this.handleMealDescriptionSave = this.handleMealDescriptionSave.bind(this)
   }
@@ -38,13 +39,32 @@ export class MealsDashboard extends React.Component {
     if (meal) {
       mealDescription = meal.mealDescription
     }
+    let isSelected = false
+    if (this.state.selectedMeal === mealOrder) {
+      isSelected = true
+    }
     return (
       <MealContainer
+        isSelected={isSelected}
         mealName={mealNames[mealOrder]}
         mealDescription={mealDescription}
         order={mealOrder}
-        handleMealDescriptionSave={(e) => this.handleMealDescriptionSave(e)} />
+        handleMealDescriptionSave={(e) => this.handleMealDescriptionSave(e)}
+        selectMeal={(e) => this.selectMeal(e)} />
     );
+  }
+
+  selectMeal(mealOrder) {
+    if (this.state.selectedMeal === mealOrder) {
+      // If the user clicks again in a selected button, unselect it
+      this.setState({
+        selectedMeal: null
+      })
+      return
+    }
+    this.setState({
+      selectedMeal: mealOrder
+    })
   }
 
   renderChangePageButton() {
@@ -122,7 +142,7 @@ export class MealsDashboard extends React.Component {
 
   render() {
     return (
-      <div className="main-dashboard">
+      <div className="main-container">
         <div className="main-header">
           {this.renderDatesNavigator()}
         </div>
@@ -150,28 +170,15 @@ export class MealsDashboard extends React.Component {
 }
 
 class MealContainer extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      isSelected: false,
-    }
-  }
-
   getClasses() {
-    return "meal-container" + (this.state.isSelected ? " meal-selected" : "")
-  }
-
-  handleClick() {
-    this.setState({
-      isSelected: !this.state.isSelected
-    })
+    return "meal-container" + (this.props.isSelected ? " meal-selected" : "")
   }
 
   renderMealButton(mealName, ) {
     return (
       <MealButton
         value={mealName}
-        onClick={() => this.handleClick()} />
+        onClick={() => this.props.selectMeal(this.props.order)} />
     );
   }
   renderMealDescription(mealName) {
@@ -227,7 +234,7 @@ class AddMealButton extends React.Component {
 
   render() {
     return (
-      <button className="add-meal-button" onClick={() => this.onClick()}>
+      <button className="btn-center add-meal-button" onClick={() => this.onClick()}>
         +
       </button>
     );
@@ -241,7 +248,7 @@ function ChangePageButton() {
     history.push("/diseases");
   }
   return (
-    <button className="btn btn-center" onClick={handleClick}>
+    <button className="btn" onClick={handleClick}>
       <svg className="bi bi-chevron-right" width="32" height="64" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path fillRule="evenodd" d="M6.646 3.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L12.293 10 6.646 4.354a.5.5 0 010-.708z" />
       </svg>

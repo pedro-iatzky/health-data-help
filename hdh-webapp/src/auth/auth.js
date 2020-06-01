@@ -63,7 +63,7 @@ export class UserAuthPage extends React.Component {
 		return (
 			<div className="auth-page">
 				<div className="auth-header">
-					<h1>Welcome to Health Data Help</h1>
+					<h1>Health Data Help</h1>
 				</div>
 				<div id="firebaseui-auth-container"></div>
 				<div id="loader">Loading...</div>

@@ -17,6 +17,7 @@ export class Diseases extends React.Component {
 			diseases: {},
 			diseasesTracked: null,
 			modalShow: false,
+			selectedDisease: null
 		}
 		// Disease description handle
 		this.handleDiseaseDescriptionSave = this.handleDiseaseDescriptionSave.bind(this)
@@ -85,11 +86,17 @@ export class Diseases extends React.Component {
 		// TODO: Order the diseases
 		let disease = disease_dobj[0]
 		let diseaseDescription = disease_dobj[1].diseaseDescription
+		let isSelected = false
+    if (this.state.selectedDisease === disease) {
+      isSelected = true
+    }
 		return (
 			<DiseaseContainer key={disease}
+				isSelected={isSelected}
 				disease={disease}
 				diseaseDescription={diseaseDescription}
-				handleDiseaseDescriptionSave={this.handleDiseaseDescriptionSave} />
+				handleDiseaseDescriptionSave={this.handleDiseaseDescriptionSave}
+				selectDisease={(e) => this.selectDisease(e)} />
 		);
 	}
 
@@ -113,6 +120,19 @@ export class Diseases extends React.Component {
 			diseases: diseases
 		})
 	}
+
+	selectDisease(disease) {
+    if (this.state.selectedDisease === disease){
+      // If the user clicks again in a selected button, unselect it
+      this.setState({
+        selectedDisease: null
+      })
+      return
+    }
+    this.setState({
+      selectedDisease: disease
+    })
+  }
 
 	handleCloseModal() {
 		this.setState({
@@ -168,7 +188,7 @@ export class Diseases extends React.Component {
 
 	render() {
 		return (
-			<div className="main-dashboard">
+			<div className="main-container">
 				<div className="main-header">
 					{this.renderDatesNavigator()}
 				</div>
@@ -195,28 +215,16 @@ export class Diseases extends React.Component {
 
 
 class DiseaseContainer extends React.Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			isSelected: false,
-		}
-	}
 
 	getClasses() {
-		return "disease-container" + (this.state.isSelected ? " disease-selected" : "")
-	}
-
-	handleClick() {
-		this.setState({
-			isSelected: !this.state.isSelected
-		})
+		return "disease-container" + (this.props.isSelected ? " disease-selected" : "")
 	}
 
 	renderDiseaseButton(disease) {
 		return (
 			<DiseaseButton
 				value={disease}
-				onClick={() => this.handleClick()} />
+				onClick={() => this.props.selectDisease(disease)} />
 		);
 	}
 	renderDiseaseDescription(disease) {
@@ -271,7 +279,7 @@ class AddDiseaseButton extends React.Component {
 	render() {
 
 		return (
-			<button className="add-disease-button" onClick={this.props.handleShow}>
+			<button className="btn-center add-disease-button" onClick={this.props.handleShow}>
 				+
 			</button>
 		);
@@ -317,7 +325,7 @@ class DiseasesModal extends React.Component {
 		return (
 			<Modal show={this.props.show} onHide={this.props.handleClose}>
 				<Modal.Header closeButton>
-					<Modal.Title>Add the diseases you want to track</Modal.Title>
+					<Modal.Title>Select diseases</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<div className="list-group">
@@ -346,7 +354,7 @@ function ChangePageButton() {
 		history.push("/dashboard");
 	}
 	return (
-		<button className="btn btn-center" onClick={handleClick}>
+		<button className="btn" onClick={handleClick}>
 			<svg className="bi bi-chevron-right" width="32" height="64" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 				<path fillRule="evenodd" d="M6.646 3.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L12.293 10 6.646 4.354a.5.5 0 010-.708z" />
 			</svg>
